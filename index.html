@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>투자콕콕 — 국내선물 · 해외선물 · 코인선물 신호</title>
+<meta name="description" content="국내선물·해외선물·코인선물 9개 시장의 매매 신호. 5분마다 갱신, 참고용 무료.">
+<meta property="og:type" content="website"><meta property="og:title" content="투자콕콕"><meta property="og:url" content="https://www.tujakok.com/"><meta property="og:site_name" content="투자콕콕">
+<meta property="og:description" content="국내선물 · 해외선물 · 코인선물. 5분마다 갱신되는 참고용 매매 신호.">
+<meta property="og:image" content="/og.png"><meta property="og:locale" content="ko_KR">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"><link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{
+  --w:#fff; --tile:#fff; --tile2:#fff; --wash:#FBFBFD;
+  --ink:#1D1D1F; --ink-2:#6E6E73; --ink-3:#86868B;
+  --line:#E3E3E8; --hair:#EFEFF3;
+  --blue:#0A7A66; --blue-2:#086152;
+  /* 한국 관례 — 오르면 빨강, 내리면 파랑.
+     이익·손실 색을 매수·매도 배지와 같은 색으로 맞춘다.
+     예전에는 이익이 초록이라 배지와 화면에서 색이 따로 놀았다. */
+  --up:#C81E2A; --down:#0A5FD6; --buy:#C81E2A; --sell:#0A5FD6;
+  /* Apple 타입 스케일 — 이 여섯 개만 쓴다 */
+  /* 글자 눈금 — 여섯 단계. 각 단계에 역할을 하나만 준다.
+     t1 큰제목 · t2 섹션제목 · tn 숫자 · t3 리드문 · t4 본문 · t5 보조 */
+  --t1:clamp(38px,5vw,56px);   /* 페이지 대제목 — h1 하나뿐 */
+  --t2:clamp(26px,3.2vw,34px); /* 섹션 제목 — h2 */
+  --tn:clamp(22px,2.4vw,28px); /* 큰 숫자 — 신호 %, 카드 값 */
+  --t3:21px;                   /* 리드문 · 소제목 */
+  --t4:17px;                   /* 본문 · 버튼 · 종목명 */
+  --t5:14px;                   /* 보조 · 라벨 · 표 */
+  --t6:14px;                   /* 예전 12px — t5 로 합친다 */
+  --gap:12px; --maxw:1000px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{background:var(--w);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro KR","SF Pro Text","Apple SD Gothic Neo",
+              "Pretendard Variable",Pretendard,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size:var(--t4);line-height:1.47;letter-spacing:normal;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,p,li,summary{word-break:keep-all}
+.tnum{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+
+/* nav */
+nav.gn{position:sticky;top:0;z-index:90;height:44px;background:rgba(250,250,252,.82);
+  backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px)}
+.gn-in{max-width:1024px;margin:0 auto;height:44px;display:flex;align-items:center;gap:32px;padding:0 22px}
+.gn a{color:rgba(0,0,0,.82);font-size:var(--t6);font-weight:400}
+.gn .brand{display:flex;align-items:center;gap:8px;font-size:var(--t4);font-weight:600;color:var(--ink);letter-spacing:-.02em}
+.gn .brand svg{color:var(--ink)}
+/* 신뢰바 — 검증 가능한 사실만 */
+.trust{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 10px;margin-top:26px}
+.trust span{font-size:var(--t6);color:var(--ink-2);border:1px solid var(--line);
+  border-radius:980px;padding:5px 12px;line-height:1.4;background:var(--w);white-space:nowrap}
+.h1-2{display:block}
+.gn .lk{display:none;gap:30px;margin-left:auto}
+.gn .lk a:hover{color:#000}
+@media(min-width:760px){.gn .lk{display:flex}}
+
+/* tiles */
+main{display:flex;flex-direction:column}
+.tile{background:var(--w);padding:88px 22px 88px;text-align:center;position:relative;overflow:hidden}
+.tile + .tile{border-top:1px solid var(--hair)}
+.tile.light{background:var(--w)}
+.in{max-width:var(--maxw);margin:0 auto}
+
+h1,.h1{font-size:var(--t1);font-weight:600;line-height:1.16;letter-spacing:normal}
+h2,.h2{font-size:var(--t2);font-weight:600;line-height:1.16;letter-spacing:normal}
+.sub{font-size:var(--t3);font-weight:400;line-height:1.25;letter-spacing:.196px;margin-top:6px;color:var(--ink-2);max-width:640px;margin-left:auto;margin-right:auto}
+.meta{font-size:var(--t5);color:var(--ink-3)}
+.lab{font-size:var(--t5);color:var(--ink-2)}
+
+/* buttons — Apple 실측 */
+.acts{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin-top:24px}
+.b{display:inline-flex;align-items:center;justify-content:center;font-size:var(--t4);font-weight:400;
+   line-height:20px;padding:11px 21px;border-radius:980px;border:1px solid transparent;cursor:pointer;transition:.14s}
+.b-fill{background:var(--blue);color:#fff}.b-fill:hover{background:#0077ED}
+.b-out{color:var(--blue-2);border-color:var(--blue-2)}.b-out:hover{background:rgba(0,102,204,.05)}
+.b-link{color:var(--blue-2);font-size:var(--t4)}.b-link:hover{text-decoration:underline}
+
+/* 대표 숫자 — h1과 같은 크기, 편차 없음 */
+.fig{font-size:var(--t1);font-weight:600;line-height:1.1;letter-spacing:normal}
+.fig .u{font-size:.42em;font-weight:400;color:var(--ink-2);margin-left:.1em}
+.up{color:var(--up)}.down{color:var(--down)}
+
+/* 히어로 차트 = 제품 사진 자리 */
+.heroart{margin-top:34px;position:relative}
+.heroart svg{display:block;width:100%;height:auto}
+
+
+/* 시장 선택 */
+.seg{display:inline-flex;background:var(--wash);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.seg::-webkit-scrollbar{display:none}
+.seg button{flex:none;border:0;background:transparent;font:inherit;font-size:var(--t5);font-weight:400;
+  color:var(--ink);padding:7px 16px;border-radius:7px;cursor:pointer;white-space:nowrap;transition:.14s}
+.seg button[aria-selected="true"]{background:var(--ink);color:#fff}
+.sub2{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:14px}
+.sub2 button{border:1px solid var(--line);background:transparent;font:inherit;font-size:var(--t5);
+  color:var(--ink-2);padding:6px 15px;border-radius:980px;cursor:pointer;transition:.14s}
+.sub2 button:hover{border-color:var(--ink-3);color:var(--ink)}
+.sub2 button[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+
+/* 기간 카드 3-up */
+.g3{display:grid;gap:var(--gap);grid-template-columns:1fr;margin-top:32px}
+@media(min-width:820px){.g3{grid-template-columns:repeat(3,1fr)}}
+.card{background:var(--w);border:1px solid var(--line);border-radius:18px;padding:26px 24px 20px;text-align:left;
+  transition:border-color .16s}
+.card:hover{border-color:#C9C9D0}
+.card .k{font-size:var(--t5);color:var(--ink-2)}
+.card .v{font-size:var(--tn);font-weight:600;line-height:1.15;margin-top:8px}
+.card .v .u{font-size:.5em;font-weight:400;color:var(--ink-2);margin-left:.1em}
+.card .m{font-size:var(--t5);color:var(--ink-2);margin-top:6px}
+.card .spark{margin-top:16px;height:46px}
+.card .spark svg{display:block;width:100%;height:46px}
+.card .f{font-size:var(--t6);color:var(--ink-3);margin-top:14px;padding-top:12px;border-top:1px solid var(--hair)}
+
+/* 9개 시장 그리드 */
+.g9{display:grid;gap:var(--gap);grid-template-columns:1fr;margin-top:34px;text-align:left}
+@media(min-width:640px){.g9{grid-template-columns:1fr 1fr}}
+@media(min-width:940px){.g9{grid-template-columns:repeat(3,1fr)}}
+.mk{background:var(--w);border:1px solid var(--line);border-radius:18px;padding:20px 20px 14px;
+  position:relative;overflow:hidden;transition:border-color .16s}
+.mk:hover{border-color:#C9C9D0}
+.mk .top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mk .nm{font-size:var(--t4);font-weight:600}
+.mk .dir{font-size:var(--t6);font-weight:600;padding:3px 9px;border-radius:6px;flex:none}
+.mk .dir.buy{background:rgba(200,30,42,.09);color:var(--buy)}
+.mk .dir.sell{background:rgba(10,95,214,.09);color:var(--sell)}
+.mk .pc{font-size:var(--tn);font-weight:600;margin-top:10px;line-height:1.1}
+.mk .sm{font-size:var(--t6);color:var(--ink-3);margin-top:4px}
+.mk .sp{margin-top:12px;height:40px}
+.mk .sp svg{display:block;width:100%;height:40px}
+
+/* 어제 목록 */
+.list{max-width:none;margin:30px 0 0;text-align:left}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--hair);font-size:var(--t5)}
+.row:last-child{border-bottom:0}
+.row .d{flex:none;font-size:var(--t6);font-weight:600;width:32px}
+.row .n{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:var(--t4)}
+.row .p{flex:none;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* 왜 2-up */
+.g2{display:grid;gap:var(--gap);grid-template-columns:1fr;margin-top:34px}
+@media(min-width:820px){.g2{grid-template-columns:1fr 1fr}}
+.why{background:var(--wash);border-radius:18px;padding:38px 30px;text-align:left}
+.why h3{font-size:var(--t3);font-weight:600;line-height:1.2}
+.why p{font-size:var(--t4);color:var(--ink-2);margin-top:10px}
+
+/* 누적 타일 */
+.eq{margin-top:30px;text-align:left}
+.eq .hd{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.eq .hd .n{font-size:var(--tn);font-weight:600}
+.eq .hd .s{font-size:var(--t5);color:var(--ink-2)}
+.eq svg{display:block;width:100%;height:auto}
+
+/* faq */
+.faq{max-width:692px;margin:30px auto 0;text-align:left}
+details{border-bottom:1px solid var(--line)}details:first-child{border-top:1px solid var(--line)}
+summary{padding:18px 2px;cursor:pointer;font-size:var(--t4);font-weight:600;list-style:none;
+  display:flex;justify-content:space-between;align-items:center;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"";flex:none;width:8px;height:8px;border-right:1.5px solid var(--blue-2);
+  border-bottom:1.5px solid var(--blue-2);transform:rotate(45deg);margin-top:-4px;transition:.2s}
+details[open] summary::after{transform:rotate(-135deg);margin-top:2px}
+details p{padding:0 2px 20px;font-size:var(--t4);color:var(--ink-2)}
+
+/* sosumi / footer */
+.sos{max-width:1000px;margin:0 auto;padding:32px 22px;color:var(--ink-3);font-size:var(--t6);line-height:1.55}
+.sos li{list-style:none;margin-bottom:5px;padding-left:15px;text-indent:-15px}
+.sos b{color:var(--ink-2);font-weight:500}
+footer{background:var(--w);border-top:1px solid var(--hair);padding:22px 22px 34px;color:var(--ink-3);font-size:var(--t6)}
+.f-in{max-width:1000px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;
+  border-top:1px solid var(--line);padding-top:16px}
+.f-in nav{display:flex;flex-wrap:wrap;gap:6px 18px}
+.f-in a:hover{text-decoration:underline}
+.banner{max-width:1000px;margin:0 auto;padding:10px 22px;font-size:var(--t6);color:var(--ink-3);text-align:center}
+.banner b{color:var(--ink-2);font-weight:500}
+/* 법정 필수 고지 — 숨기지 않고 상단에 */
+.notice{max-width:var(--maxw);margin:16px auto 0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.notice span{font-size:var(--t6);color:var(--ink-2);border:1px solid var(--line);
+  border-radius:980px;padding:5px 13px;line-height:1.4;background:var(--w)}
+/* 규모 지표 */
+.scale{display:flex;flex-wrap:wrap;justify-content:center;gap:0 clamp(28px,5vw,64px);margin-top:34px}
+.scale div{padding:6px 0}
+.scale .v{font-size:var(--t3);font-weight:600;line-height:1.1}
+.scale .k{font-size:var(--t5);color:var(--ink-2);margin-top:4px}
+.rv{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.rv.in-v{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+
+/* 종목별 기록 표 */
+.eqtbl{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:18px}
+.eqtbl table{width:100%;border-collapse:collapse;font-size:var(--t5);white-space:nowrap}
+.eqtbl th{text-align:right;font-weight:400;font-size:var(--t5);color:var(--ink-3);
+  padding:0 0 10px;border-bottom:1px solid var(--line)}
+.eqtbl th:first-child{text-align:left}
+.eqtbl td{padding:12px 0;border-bottom:1px solid var(--line);text-align:right}
+.eqtbl td:first-child{text-align:left}
+.eqtbl tr:last-child td{border-bottom:0}
+
+
+.mk .dir.big{font-size:var(--t5);padding:5px 12px;font-weight:600}
+.mk .sm b{font-weight:600;color:var(--ink)}
+
+/* 그래프가 없는 칸은 자리를 비우지 않는다 */
+.card .spark:empty{display:none}
+.card .v .u{margin-left:.28em}
+
+.mk .pc .mn{font-size:var(--t5);font-weight:400;margin-left:.5em;color:inherit;opacity:.8}
+
+.card .v .tnum,.card .v span{font-size:inherit}
+.card .v{font-size:clamp(17px,1.7vw,21px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .v .u{font-size:.55em}
+</style>
+</head>
+<body>
+
+<nav class="gn">
+  <div class="gn-in">
+    <a class="brand" href="#top"><img src="/logo.png" width="26" height="26" alt="" style="display:block;flex:none;border-radius:50%"><span>투자콕콕</span></a>
+    <div class="lk"><a href="#markets">신호</a><a href="#perf">기록</a><a href="#why">소개</a><a href="#join">채널</a></div>
+  </div>
+</nav>
+
+<main id="top">
+
+  <!-- 1. 히어로 -->
+  <section class="tile">
+    <div class="in">
+      <h1 class="rv">차트가 바뀌는 순간을<span class="h1-2">콕 집어드립니다.</span></h1>
+      <p class="sub rv" style="max-width:34em;margin:18px auto 0">
+        국내선물 · 해외선물 · 코인선물 9개 시장. 5분마다 방향을 다시 계산해 진입가와 이탈가를 알려드립니다.</p>
+      <div class="acts rv">
+        <a class="b b-fill" id="joinTop" href="https://t.me/signallab_trading" target="_blank" rel="noopener">텔레그램으로 받기</a>
+        <a class="b b-out" href="#markets">지금 신호 보기</a>
+      </div>
+      
+      <div class="scale rv" id="hScale"></div>
+      <div class="heroart rv" id="hArt"></div>
+    </div>
+  </section>
+
+  <!-- 2. 성과 -->
+  <!-- 3. 9개 시장 -->
+  <section class="tile" id="markets">
+    <div class="in">
+      <h2 class="rv">지금 아홉 개 시장은.</h2>
+      <p class="sub rv">현재 방향과 지금까지의 기록이에요.</p>
+      <div class="g9 rv" id="g9"></div>
+      <p class="meta rv" style="margin-top:20px">손익금은 모두 <b>1계약 매매 기준</b>입니다. 실제 손익은 계약 수에 비례합니다.</p>
+      <div class="acts rv" style="margin-top:22px"><a class="b b-fill" id="chartA" href="/chart.html">실시간 차트 열기</a></div>
+    </div>
+  </section>
+
+  <section class="tile light" id="perf">
+    <div class="in">
+      <h2 class="rv">맞은 것도, 틀린 것도.</h2>
+      <p class="sub rv">지나간 기록이에요. 앞으로를 약속하지 않습니다.</p>
+
+      <div class="rv" style="margin-top:30px">
+        <div class="seg" id="segG" role="tablist" aria-label="시장 구분"></div>
+        <div class="sub2" id="segS" role="tablist" aria-label="종목"></div>
+      </div>
+
+      <div class="g3 rv" id="cards"></div>
+      <div class="list rv" id="dayList"></div>
+    </div>
+  </section>
+
+  <!-- 4. 누적 -->
+  <section class="tile light" id="equity">
+    <div class="in">
+      <h2 class="rv">진 구간까지 전부.</h2>
+      <p class="sub rv">첫 신호부터 오늘까지, 지우지 않았어요.</p>
+      <div class="eq rv" id="eq"></div>
+    </div>
+  </section>
+
+  <!-- 5. 왜 -->
+  <section class="tile" id="why">
+    <div class="in">
+      <h2 class="rv">숨길 기록이 없어서<br>다 공개합니다.</h2>
+      <div class="g2">
+        <div class="why rv"><h3>지표를 하나도 바꾸지 않았습니다.</h3>
+          <p>슈퍼트렌드 ATR 10, 배수 3. 9개 종목 전부 같은 값을 쓰고, 한 번도 바꾸지 않았습니다. 성적이 예쁘게 나올 때까지 값을 돌려보지 않았어요.</p></div>
+        <div class="why rv"><h3>사람이 끼어들지 않습니다.</h3>
+          <p>봉이 마감되면 규칙이 방향을 정하고 그대로 나갑니다. 그날 기분이나 뉴스로 신호를 빼거나 더하지 않아요.</p></div>
+        <div class="why rv"><h3>성공한 신호만 캡처하지 않습니다.</h3>
+          <p>위 기록에 손실 구간이 전부 들어 있어요. 전체가 아니면 기록이 아닙니다.</p></div>
+        <div class="why rv"><h3>하루가 끊기지 않습니다.</h3>
+          <p>코스피가 끝나면 나스닥이, 나스닥이 끝나면 코인이 이어받아요.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. 채널 -->
+  <section class="tile light" id="join">
+    <div class="in">
+      <h2 class="rv">바뀌는 순간, 알림.</h2>
+      <p class="sub rv">가입비도, 등급도, 단톡방도 없어요.</p>
+      <div class="acts rv">
+        <a class="b b-fill" id="joinB" href="https://t.me/signallab_trading" target="_blank" rel="noopener">텔레그램으로 받기</a>
+        <a class="b b-out" id="askB" href="https://t.me/thesignallab_trading" target="_blank" rel="noopener">문의하기</a>
+      </div>
+      <p class="rv" style="margin-top:16px"><a class="b-link" id="ytB" href="https://youtube.com/@tujakok" target="_blank" rel="noopener">유튜브 채널 보기 ›</a></p>
+    </div>
+  </section>
+
+</main>
+
+<div class="banner" id="banner" hidden></div>
+
+<div class="sos"><ul>
+  <li><b>1.</b> 본 사이트의 모든 내용은 투자 참고용 정보이며, 특정 종목·상품의 매매를 권유하지 않고 수익을 보장하지 않습니다.</li>
+  <li><b>2.</b> 선물·파생상품은 레버리지가 적용되어 투입 원금을 초과하는 손실이 발생할 수 있습니다.</li>
+  <li><b>3.</b> 게시된 수익률은 신호를 기계적으로 따랐을 때 1계약 기준으로 계산한 과거 결과이며, 복리가 아닙니다. 거래 수수료와 슬리피지를 뺀 값이지만 그 비용은 가정치이고 세금은 반영되어 있지 않아, 실제 체결과 다를 수 있습니다. 과거의 결과가 미래 수익을 보장하지 않습니다.</li>
+  <li><b>4.</b> 계약 크기가 시장마다 달라 금액은 시장 간 직접 비교가 불가능합니다. 원화와 달러 손익도 합산하지 않습니다.</li>
+  <li><b>5.</b> 모든 투자 판단과 결과의 책임은 이용자 본인에게 있습니다. 운영자는 고객 자산을 예탁받거나 대리 운용하지 않습니다.</li>
+  <li><b>6.</b> 본 사이트는 금융투자업 인가를 받은 투자자문업자가 아니며, 개별 맞춤형 투자자문을 제공하지 않습니다.</li>
+  <li><b>7.</b> 시세는 실시간이 아니며 지연·누락될 수 있습니다.</li>
+</ul></div>
+
+<footer><div class="f-in">
+  <div>Copyright © 2026 투자콕콕. All rights reserved.</div>
+  <nav><a href="#markets">신호</a><a href="#perf">기록</a><a href="#why">소개</a><a href="/terms.html">이용약관</a><a href="/privacy.html">개인정보처리방침</a></nav>
+</div></footer>
+<script>window.TUJAKOK_LEDGER={"v":1,"trades":[{"id":"K200","n":"코스피200 선물","g":"국내선물","cur":"KRW","mult":250000,"t0":1787205000,"t1":1787270700,"dir":-1,"entry":1072.25,"exit":1069.15,"pts":3.1,"ret":0.2891,"bars":10},{"id":"K200","n":"코스피200 선물","g":"국내선물","cur":"KRW","mult":250000,"t0":1787271000,"t1":1787293800,"dir":1,"entry":1081,"exit":1099.3,"pts":18.3,"ret":1.6929,"bars":76},{"id":"K200","n":"코스피200 선물","g":"국내선물","cur":"KRW","mult":250000,"t0":1787529600,"t1":1787547900,"dir":-1,"entry":1077.05,"exit":1060.25,"pts":16.8,"ret":1.5598,"bars":61},{"id":"K200","n":"코스피200 선물","g":"국내선물","cur":"KRW","mult":250000,"t0":1787548200,"t1":1787553000,"dir":1,"entry":1062.95,"exit":1053.95,"pts":-9,"ret":-0.8467,"bars":16},{"id":"K200","n":"코스피200 선물","g":"국내선물","cur":"KRW","mult":250000,"t0":1787616000,"t1":1787619000,"dir":-1,"entry":1022.05,"exit":1028.6,"pts":-6.55,"ret":-0.6409,"bars":10},{"id":"YM","n":"다우 선물","g":"해외선물","cur":"USD","mult":5,"t0":1787623800,"t1":1787626800,"dir":-1,"entry":53463,"exit":53476,"pts":-13,"ret":-0.0243,"bars":10},{"id":"YM","n":"다우 선물","g":"해외선물","cur":"USD","mult":5,"t0":1787627100,"t1":1787633100,"dir":1,"entry":53499,"exit":53481,"pts":-18,"ret":-0.0336,"bars":20},{"id":"YM","n":"다우 선물","g":"해외선물","cur":"USD","mult":5,"t0":1787633400,"t1":1787634600,"dir":-1,"entry":53469,"exit":53486,"pts":-17,"ret":-0.0318,"bars":4},{"id":"YM","n":"다우 선물","g":"해외선물","cur":"USD","mult":5,"t0":1787634900,"t1":1787642100,"dir":1,"entry":53493,"exit":53547,"pts":54,"ret":0.1009,"bars":23},{"id":"SOL","n":"솔라나","g":"코인 무기한선물","cur":"USD","mult":1,"t0":1787640000,"t1":1787643300,"dir":-1,"entry":101.108,"exit":101.357,"pts":-0.249,"ret":-0.2463,"bars":11},{"id":"SOL","n":"솔라나","g":"코인 무기한선물","cur":"USD","mult":1,"t0":1787643600,"t1":1787643900,"dir":1,"entry":101.655,"exit":100.702,"pts":-0.953,"ret":-0.9375,"bars":1},{"id":"ES","n":"S&P500 선물","g":"해외선물","cur":"USD","mult":50,"t0":1787644800,"t1":1787645700,"dir":-1,"entry":7681.25,"exit":7684.25,"pts":-3,"ret":-0.0391,"bars":3},{"id":"YM","n":"다우 선물","g":"해외선물","cur":"USD","mult":5,"t0":1787642400,"t1":1787645700,"dir":-1,"entry":53533,"exit":53533,"pts":0,"ret":0,"bars":11},{"id":"ES","n":"S&P500 선물","g":"해외선물","cur":"USD","mult":50,"t0":1787646000,"t1":1787655600,"dir":1,"entry":7698.75,"exit":7699,"pts":0.25,"ret":0.0032,"bars":32},{"id":"ES","n":"S&P500 선물","g":"해외선물","cur":"USD","mult":50,"t0":1787655900,"t1":1787659800,"dir":-1,"entry":7697,"exit":7704,"pts":-7,"ret":-0.0909,"bars":13},{"id":"ES","n":"S&P500 선물","g":"해외선물","cur":"USD","mult":50,"t0":1787660100,"t1":1787661000,"dir":1,"entry":7706.75,"exit":7699.25,"pts":-7.5,"ret":-0.0973,"bars":3},{"id":"YM","n":"다우 선물","g":"해외선물","cur":"USD","mult":5,"t0":1787646000,"t1":1787661000,"dir":1,"entry":53637,"exit":53730,"pts":93,"ret":0.1734,"bars":50},{"id":"NQ","n":"나스닥100 선물","g":"해외선물","cur":"USD","mult":20,"t0":1787661300,"t1":1787665200,"dir":-1,"entry":29320,"exit":29349,"pts":-29,"ret":-0.0989,"bars":13},{"id":"NQ","n":"나스닥100 선물","g":"해외선물","cur":"USD","mult":20,"t0":1787665500,"t1":1787666100,"dir":1,"entry":29392,"exit":29312.75,"pts":-79.25,"ret":-0.2696,"bars":2},{"id":"BTC","n":"비트코인","g":"코인 무기한선물","cur":"USD","mult":0.01,"t0":1787643900,"t1":1787667300,"dir":-1,"entry":79860.8,"exit":78907.1,"pts":953.7,"ret":1.1942,"bars":78},{"id":"XRP","n":"리플","g":"코인 무기한선물","cur":"USD","mult":100,"t0":1787639700,"t1":1787667900,"dir":-1,"entry":1.5074,"exit":1.4697,"pts":0.0377,"ret":2.501,"bars":94},{"id":"ETH","n":"이더리움","g":"코인 무기한선물","cur":"USD","mult":0.1,"t0":1787643300,"t1":1787673000,"dir":-1,"entry":2496.6,"exit":2476.52,"pts":20.08,"ret":0.8043,"bars":99},{"id":"ES","n":"S&P500 선물","g":"해외선물","cur":"USD","mult":50,"t0":1787661300,"t1":1787675400,"dir":-1,"entry":7695.75,"exit":7690.5,"pts":5.25,"ret":0.0682,"bars":47},{"id":"BTC","n":"비트코인","g":"코인 무기한선물","cur":"USD","mult":0.01,"t0":1787667600,"t1":1787677200,"dir":1,"entry":79091.5,"exit":79026,"pts":-65.5,"ret":-0.0828,"bars":32},{"id":"ETH","n":"이더리움","g":"코인 무기한선물","cur":"USD","mult":0.1,"t0":1787673300,"t1":1787677200,"dir":1,"entry":2481.52,"exit":2465.08,"pts":-16.44,"ret":-0.6625,"bars":13},{"id":"BTC","n":"비트코인","g":"코인 무기한선물","cur":"USD","mult":0.01,"t0":1787677500,"t1":1787680800,"dir":-1,"entry":78915.5,"exit":79186.1,"pts":-270.6,"ret":-0.3429,"bars":11},{"id":"SOL","n":"솔라나","g":"코인 무기한선물","cur":"USD","mult":1,"t0":1787644200,"t1":1787681400,"dir":-1,"entry":100.468,"exit":98.411,"pts":2.057,"ret":2.0474,"bars":124},{"id":"YM","n":"다우 선물","g":"해외선물","cur":"USD","mult":5,"t0":1787661300,"t1":1787682900,"dir":-1,"entry":53703,"exit":53604,"pts":99,"ret":0.1843,"bars":72},{"id":"NQ","n":"나스닥100 선물","g":"해외선물","cur":"USD","mult":20,"t0":1787666400,"t1":1787683200,"dir":-1,"entry":29261.25,"exit":29257.75,"pts":3.5,"ret":0.012,"bars":56},{"id":"SOL","n":"솔라나","g":"코인 무기한선물","cur":"USD","mult":1,"t0":1787681700,"t1":1787685600,"dir":1,"entry":98.456,"exit":98.389,"pts":-0.067,"ret":-0.0681,"bars":13},{"id":"BTC","n":"비트코인","g":"코인 무기한선물","cur":"USD","mult":0.01,"t0":1787681100,"t1":1787685900,"dir":1,"entry":79229.4,"exit":78888.1,"pts":-341.3,"ret":-0.4308,"bars":16},{"id":"XRP","n":"리플","g":"코인 무기한선물","cur":"USD","mult":100,"t0":1787668200,"t1":1787686500,"dir":1,"entry":1.4754,"exit":1.4666,"pts":-0.0088,"ret":-0.5964,"bars":61},{"id":"BTC","n":"비트코인","g":"코인 무기한선물","cur":"USD","mult":0.01,"t0":1787686200,"t1":1787694900,"dir":-1,"entry":78852.7,"exit":78530.1,"pts":322.6,"ret":0.4091,"bars":29},{"id":"ETH","n":"이더리움","g":"코인 무기한선물","cur":"USD","mult":0.1,"t0":1787677500,"t1":1787695500,"dir":-1,"entry":2459.39,"exit":2447.16,"pts":12.23,"ret":0.4973,"bars":60},{"id":"SOL","n":"솔라나","g":"코인 무기한선물","cur":"USD","mult":1,"t0":1787685900,"t1":1787695500,"dir":-1,"entry":97.817,"exit":97.456,"pts":0.361,"ret":0.3691,"bars":32},{"id":"NQ","n":"나스닥100 선물","g":"해외선물","cur":"USD","mult":20,"t0":1787683500,"t1":1787700000,"dir":1,"entry":29269.75,"exit":29262,"pts":-7.75,"ret":-0.0265,"bars":43},{"id":"ES","n":"S&P500 선물","g":"해외선물","cur":"USD","mult":50,"t0":1787675700,"t1":1787700000,"dir":1,"entry":7692.25,"exit":7689.5,"pts":-2.75,"ret":-0.0358,"bars":69},{"id":"SOL","n":"솔라나","g":"코인 무기한선물","cur":"USD","mult":1,"t0":1787695800,"t1":1787700900,"dir":1,"entry":97.58,"exit":96.847,"pts":-0.733,"ret":-0.7512,"bars":17},{"id":"YM","n":"다우 선물","g":"해외선물","cur":"USD","mult":5,"t0":1787683200,"t1":1787701200,"dir":1,"entry":53626,"exit":53614,"pts":-12,"ret":-0.0224,"bars":46},{"id":"BTC","n":"비트코인","g":"코인 무기한선물","cur":"USD","mult":0.01,"t0":1787695200,"t1":1787701200,"dir":1,"entry":78687.7,"exit":78557.8,"pts":-129.9,"ret":-0.1651,"bars":20},{"id":"ETH","n":"이더리움","g":"코인 무기한선물","cur":"USD","mult":0.1,"t0":1787695800,"t1":1787701200,"dir":1,"entry":2450.68,"exit":2443.16,"pts":-7.52,"ret":-0.3069,"bars":18},{"id":"K200","n":"코스피200 선물","g":"국내선물","cur":"KRW","mult":250000,"t0":1787619300,"t1":1787705400,"dir":1,"entry":1031.1,"exit":1057.6,"pts":26.5,"ret":2.5701,"bars":78},{"id":"YM","n":"다우 선물","g":"해외선물","cur":"USD","mult":5,"t0":1787701500,"t1":1787705700,"dir":-1,"entry":53607,"exit":53619,"pts":-12,"ret":-0.0224,"bars":13},{"id":"ETH","n":"이더리움","g":"코인 무기한선물","cur":"USD","mult":0.1,"t0":1787701500,"t1":1787705700,"dir":-1,"entry":2439.22,"exit":2445.17,"pts":-5.95,"ret":-0.2439,"bars":14},{"id":"DOGE","n":"도지코인","g":"코인 무기한선물","cur":"USD","mult":1000,"t0":1787640300,"t1":1787705700,"dir":-1,"entry":0.09192,"exit":0.08611,"pts":0.00581,"ret":6.3207,"bars":218},{"id":"YM","n":"다우 선물","g":"해외선물","cur":"USD","mult":5,"t0":1787706000,"t1":1787707500,"dir":1,"entry":53640,"exit":53633,"pts":-7,"ret":-0.013,"bars":5},{"id":"BTC","n":"비트코인","g":"코인 무기한선물","cur":"USD","mult":0.01,"t0":1787701500,"t1":1787707500,"dir":-1,"entry":78445.4,"exit":78666.5,"pts":-221.1,"ret":-0.2819,"bars":20},{"id":"SOL","n":"솔라나","g":"코인 무기한선물","cur":"USD","mult":1,"t0":1787701200,"t1":1787707500,"dir":-1,"entry":96.674,"exit":96.722,"pts":-0.048,"ret":-0.0497,"bars":21},{"id":"XRP","n":"리플","g":"코인 무기한선물","cur":"USD","mult":100,"t0":1787686800,"t1":1787707500,"dir":-1,"entry":1.465,"exit":1.4345,"pts":0.0305,"ret":2.0819,"bars":69},{"id":"K200","n":"코스피200 선물","g":"국내선물","cur":"KRW","mult":250000,"t0":1787705700,"t1":1787710800,"dir":-1,"entry":1056.7,"exit":1071.45,"pts":-14.75,"ret":-1.3959,"bars":17},{"id":"NQ","n":"나스닥100 선물","g":"해외선물","cur":"USD","mult":20,"t0":1787700300,"t1":1787711100,"dir":-1,"entry":29246,"exit":29172.25,"pts":73.75,"ret":0.2522,"bars":35},{"id":"ES","n":"S&P500 선물","g":"해외선물","cur":"USD","mult":50,"t0":1787700300,"t1":1787711100,"dir":-1,"entry":7687.5,"exit":7678.5,"pts":9,"ret":0.1171,"bars":35},{"id":"YM","n":"다우 선물","g":"해외선물","cur":"USD","mult":5,"t0":1787707800,"t1":1787711700,"dir":-1,"entry":53614,"exit":53639,"pts":-25,"ret":-0.0466,"bars":13}],"updatedAt":1787712852};</script>
+<script>
+/* ═════ 설정 ═════ */
+const CONFIG = {
+  feed:         "",   // 시세 저장소 주소. data/signals.json 과 data/trades.json 을 함께 읽습니다.
+  chartUrl:     "/chart.html",
+  telegramJoin: "https://t.me/signallab_trading",
+  telegramAsk:  "https://t.me/thesignallab_trading",
+  youtube:      "https://youtube.com/@tujakok"
+};
+const SNAPSHOT =
+{"tf":5,"atrN":10,"mult":3,"at":1787712852,"syms":[{"id":"K200","n":"코스피200 선물","g":"국내선물","d":2,"mult":250000,"cur":"KRW","unit":"1계약 = 25만원 × 포인트","note":"09:00–15:45","dir":1,"entry":1076.25,"line":1063.6652,"last":1076.7,"t0":1787711100,"bars":1,"at":1787711400,"pts":0.45,"pct":0.0418,"money":112500,"hist":[{"t0":1787201100,"t1":1787204700,"dir":1,"open":false,"entry":1081.75,"exit":1075.4,"pts":-6.35,"bars":12},{"t0":1787205000,"t1":1787270700,"dir":-1,"open":false,"entry":1072.25,"exit":1069.15,"pts":3.1,"bars":10},{"t0":1787271000,"t1":1787293800,"dir":1,"open":false,"entry":1081,"exit":1099.3,"pts":18.3,"bars":76},{"t0":1787529600,"t1":1787547900,"dir":-1,"open":false,"entry":1077.05,"exit":1060.25,"pts":16.8,"bars":61},{"t0":1787548200,"t1":1787553000,"dir":1,"open":false,"entry":1062.95,"exit":1053.95,"pts":-9,"bars":16},{"t0":1787616000,"t1":1787619000,"dir":-1,"open":false,"entry":1022.05,"exit":1028.6,"pts":-6.55,"bars":10},{"t0":1787619300,"t1":1787705400,"dir":1,"open":false,"entry":1031.1,"exit":1057.6,"pts":26.5,"bars":78},{"t0":1787705700,"t1":1787710800,"dir":-1,"open":false,"entry":1056.7,"exit":1071.45,"pts":-14.75,"bars":17},{"t0":1787711100,"t1":1787711400,"dir":1,"open":true,"entry":1076.25,"exit":1076.7,"pts":0.45,"bars":1}]},{"id":"NQ","n":"나스닥100 선물","g":"해외선물","d":2,"mult":20,"cur":"USD","unit":"E-mini 1계약 = $20 × 포인트","note":"거의 24시간","dir":1,"entry":29181.25,"line":29164.0534,"last":29215.5,"t0":1787711400,"bars":3,"at":1787712252,"pts":34.25,"pct":0.1174,"money":685,"hist":[{"t0":1787621100,"t1":1787661000,"dir":1,"open":false,"entry":29115,"exit":29339,"pts":224,"bars":131},{"t0":1787661300,"t1":1787665200,"dir":-1,"open":false,"entry":29320,"exit":29349,"pts":-29,"bars":13},{"t0":1787665500,"t1":1787666100,"dir":1,"open":false,"entry":29392,"exit":29312.75,"pts":-79.25,"bars":2},{"t0":1787666400,"t1":1787683200,"dir":-1,"open":false,"entry":29261.25,"exit":29257.75,"pts":3.5,"bars":56},{"t0":1787683500,"t1":1787700000,"dir":1,"open":false,"entry":29269.75,"exit":29262,"pts":-7.75,"bars":43},{"t0":1787700300,"t1":1787711100,"dir":-1,"open":false,"entry":29246,"exit":29172.25,"pts":73.75,"bars":35},{"t0":1787711400,"t1":1787712252,"dir":1,"open":true,"entry":29181.25,"exit":29215.5,"pts":34.25,"bars":3}]},{"id":"ES","n":"S&P500 선물","g":"해외선물","d":2,"mult":50,"cur":"USD","unit":"E-mini 1계약 = $50 × 포인트","note":"거의 24시간","dir":1,"entry":7680.25,"line":7678.2472,"last":7684.75,"t0":1787711400,"bars":3,"at":1787712254,"pts":4.5,"pct":0.0586,"money":225,"hist":[{"t0":1787621100,"t1":1787644500,"dir":1,"open":false,"entry":7672.5,"exit":7682.75,"pts":10.25,"bars":76},{"t0":1787644800,"t1":1787645700,"dir":-1,"open":false,"entry":7681.25,"exit":7684.25,"pts":-3,"bars":3},{"t0":1787646000,"t1":1787655600,"dir":1,"open":false,"entry":7698.75,"exit":7699,"pts":0.25,"bars":32},{"t0":1787655900,"t1":1787659800,"dir":-1,"open":false,"entry":7697,"exit":7704,"pts":-7,"bars":13},{"t0":1787660100,"t1":1787661000,"dir":1,"open":false,"entry":7706.75,"exit":7699.25,"pts":-7.5,"bars":3},{"t0":1787661300,"t1":1787675400,"dir":-1,"open":false,"entry":7695.75,"exit":7690.5,"pts":5.25,"bars":47},{"t0":1787675700,"t1":1787700000,"dir":1,"open":false,"entry":7692.25,"exit":7689.5,"pts":-2.75,"bars":69},{"t0":1787700300,"t1":1787711100,"dir":-1,"open":false,"entry":7687.5,"exit":7678.5,"pts":9,"bars":35},{"t0":1787711400,"t1":1787712254,"dir":1,"open":true,"entry":7680.25,"exit":7684.75,"pts":4.5,"bars":3}]},{"id":"YM","n":"다우 선물","g":"해외선물","d":0,"mult":5,"cur":"USD","unit":"E-mini 1계약 = $5 × 포인트","note":"거의 24시간","dir":1,"entry":53658,"line":53622.6038,"last":53658,"t0":1787712000,"bars":1,"at":1787712251,"pts":0,"pct":0,"money":0,"hist":[{"t0":1787620800,"t1":1787623500,"dir":1,"open":false,"entry":53486,"exit":53479,"pts":-7,"bars":9},{"t0":1787623800,"t1":1787626800,"dir":-1,"open":false,"entry":53463,"exit":53476,"pts":-13,"bars":10},{"t0":1787627100,"t1":1787633100,"dir":1,"open":false,"entry":53499,"exit":53481,"pts":-18,"bars":20},{"t0":1787633400,"t1":1787634600,"dir":-1,"open":false,"entry":53469,"exit":53486,"pts":-17,"bars":4},{"t0":1787634900,"t1":1787642100,"dir":1,"open":false,"entry":53493,"exit":53547,"pts":54,"bars":23},{"t0":1787642400,"t1":1787645700,"dir":-1,"open":false,"entry":53533,"exit":53533,"pts":0,"bars":11},{"t0":1787646000,"t1":1787661000,"dir":1,"open":false,"entry":53637,"exit":53730,"pts":93,"bars":50},{"t0":1787661300,"t1":1787682900,"dir":-1,"open":false,"entry":53703,"exit":53604,"pts":99,"bars":72},{"t0":1787683200,"t1":1787701200,"dir":1,"open":false,"entry":53626,"exit":53614,"pts":-12,"bars":46},{"t0":1787701500,"t1":1787705700,"dir":-1,"open":false,"entry":53607,"exit":53619,"pts":-12,"bars":13},{"t0":1787706000,"t1":1787707500,"dir":1,"open":false,"entry":53640,"exit":53633,"pts":-7,"bars":5},{"t0":1787707800,"t1":1787711700,"dir":-1,"open":false,"entry":53614,"exit":53639,"pts":-25,"bars":13},{"t0":1787712000,"t1":1787712251,"dir":1,"open":true,"entry":53658,"exit":53658,"pts":0,"bars":1}]},{"id":"BTC","n":"비트코인","g":"코인 무기한선물","d":1,"mult":0.01,"cur":"USD","unit":"1계약 = 0.01 BTC","note":"","dir":1,"entry":78878.1,"line":78777.5173,"last":79023.2,"t0":1787707800,"bars":16,"at":1787712600,"pts":145.1,"pct":0.184,"money":1.45,"hist":[{"t0":1787625900,"t1":1787643600,"dir":1,"open":false,"entry":80620.6,"exit":80476.4,"pts":-144.2,"bars":59},{"t0":1787643900,"t1":1787667300,"dir":-1,"open":false,"entry":79860.8,"exit":78907.1,"pts":953.7,"bars":78},{"t0":1787667600,"t1":1787677200,"dir":1,"open":false,"entry":79091.5,"exit":79026,"pts":-65.5,"bars":32},{"t0":1787677500,"t1":1787680800,"dir":-1,"open":false,"entry":78915.5,"exit":79186.1,"pts":-270.6,"bars":11},{"t0":1787681100,"t1":1787685900,"dir":1,"open":false,"entry":79229.4,"exit":78888.1,"pts":-341.3,"bars":16},{"t0":1787686200,"t1":1787694900,"dir":-1,"open":false,"entry":78852.7,"exit":78530.1,"pts":322.6,"bars":29},{"t0":1787695200,"t1":1787701200,"dir":1,"open":false,"entry":78687.7,"exit":78557.8,"pts":-129.9,"bars":20},{"t0":1787701500,"t1":1787707500,"dir":-1,"open":false,"entry":78445.4,"exit":78666.5,"pts":-221.1,"bars":20},{"t0":1787707800,"t1":1787712600,"dir":1,"open":true,"entry":78878.1,"exit":79023.2,"pts":145.1,"bars":16}]},{"id":"ETH","n":"이더리움","g":"코인 무기한선물","d":2,"mult":0.1,"cur":"USD","unit":"1계약 = 0.1 ETH","note":"","dir":1,"entry":2452.1,"line":2454.0431,"last":2463.52,"t0":1787706000,"bars":22,"at":1787712600,"pts":11.42,"pct":0.4657,"money":1.14,"hist":[{"t0":1787625900,"t1":1787643000,"dir":1,"open":false,"entry":2508.17,"exit":2501.07,"pts":-7.1,"bars":57},{"t0":1787643300,"t1":1787673000,"dir":-1,"open":false,"entry":2496.6,"exit":2476.52,"pts":20.08,"bars":99},{"t0":1787673300,"t1":1787677200,"dir":1,"open":false,"entry":2481.52,"exit":2465.08,"pts":-16.44,"bars":13},{"t0":1787677500,"t1":1787695500,"dir":-1,"open":false,"entry":2459.39,"exit":2447.16,"pts":12.23,"bars":60},{"t0":1787695800,"t1":1787701200,"dir":1,"open":false,"entry":2450.68,"exit":2443.16,"pts":-7.52,"bars":18},{"t0":1787701500,"t1":1787705700,"dir":-1,"open":false,"entry":2439.22,"exit":2445.17,"pts":-5.95,"bars":14},{"t0":1787706000,"t1":1787712600,"dir":1,"open":true,"entry":2452.1,"exit":2463.52,"pts":11.42,"bars":22}]},{"id":"SOL","n":"솔라나","g":"코인 무기한선물","d":3,"mult":1,"cur":"USD","unit":"1계약 = 1 SOL","note":"","dir":1,"entry":97.109,"line":96.7343,"last":97.121,"t0":1787707800,"bars":16,"at":1787712600,"pts":0.012,"pct":0.0124,"money":0.01,"hist":[{"t0":1787625900,"t1":1787639700,"dir":1,"open":false,"entry":101.432,"exit":101.195,"pts":-0.237,"bars":46},{"t0":1787640000,"t1":1787643300,"dir":-1,"open":false,"entry":101.108,"exit":101.357,"pts":-0.249,"bars":11},{"t0":1787643600,"t1":1787643900,"dir":1,"open":false,"entry":101.655,"exit":100.702,"pts":-0.953,"bars":1},{"t0":1787644200,"t1":1787681400,"dir":-1,"open":false,"entry":100.468,"exit":98.411,"pts":2.057,"bars":124},{"t0":1787681700,"t1":1787685600,"dir":1,"open":false,"entry":98.456,"exit":98.389,"pts":-0.067,"bars":13},{"t0":1787685900,"t1":1787695500,"dir":-1,"open":false,"entry":97.817,"exit":97.456,"pts":0.361,"bars":32},{"t0":1787695800,"t1":1787700900,"dir":1,"open":false,"entry":97.58,"exit":96.847,"pts":-0.733,"bars":17},{"t0":1787701200,"t1":1787707500,"dir":-1,"open":false,"entry":96.674,"exit":96.722,"pts":-0.048,"bars":21},{"t0":1787707800,"t1":1787712600,"dir":1,"open":true,"entry":97.109,"exit":97.121,"pts":0.012,"bars":16}]},{"id":"XRP","n":"리플","g":"코인 무기한선물","d":4,"mult":100,"cur":"USD","unit":"1계약 = 100 XRP","note":"","dir":1,"entry":1.4441,"line":1.4334,"last":1.4424,"t0":1787707800,"bars":16,"at":1787712600,"pts":-0.0017,"pct":-0.1177,"money":-0.17,"hist":[{"t0":1787625900,"t1":1787639400,"dir":1,"open":false,"entry":1.5263,"exit":1.5114,"pts":-0.0149,"bars":45},{"t0":1787639700,"t1":1787667900,"dir":-1,"open":false,"entry":1.5074,"exit":1.4697,"pts":0.0377,"bars":94},{"t0":1787668200,"t1":1787686500,"dir":1,"open":false,"entry":1.4754,"exit":1.4666,"pts":-0.0088,"bars":61},{"t0":1787686800,"t1":1787707500,"dir":-1,"open":false,"entry":1.465,"exit":1.4345,"pts":0.0305,"bars":69},{"t0":1787707800,"t1":1787712600,"dir":1,"open":true,"entry":1.4441,"exit":1.4424,"pts":-0.0017,"bars":16}]},{"id":"DOGE","n":"도지코인","g":"코인 무기한선물","d":5,"mult":1000,"cur":"USD","unit":"1계약 = 1,000 DOGE","note":"","dir":1,"entry":0.08646,"line":0.0863,"last":0.08668,"t0":1787706000,"bars":22,"at":1787712600,"pts":0.00022,"pct":0.2545,"money":0.22,"hist":[{"t0":1787625900,"t1":1787640000,"dir":1,"open":false,"entry":0.09212,"exit":0.09208,"pts":-0.00004,"bars":47},{"t0":1787640300,"t1":1787705700,"dir":-1,"open":false,"entry":0.09192,"exit":0.08611,"pts":0.00581,"bars":218},{"t0":1787706000,"t1":1787712600,"dir":1,"open":true,"entry":0.08646,"exit":0.08668,"pts":0.00022,"bars":22}]}],"ok":9,"fail":[]};
+
+const GROUPS=[{k:"국내선물",l:"국내선물"},{k:"해외선물",l:"해외선물"},{k:"코인 무기한선물",l:"코인선물"}];
+
+/* 시간 (KST) */
+const KO=9*3600;
+const kp=t=>{const d=new Date((t+KO)*1000);return{y:d.getUTCFullYear(),m:d.getUTCMonth(),d:d.getUTCDate(),dow:d.getUTCDay(),
+  hh:String(d.getUTCHours()).padStart(2,"0"),mm:String(d.getUTCMinutes()).padStart(2,"0")}};
+const ds=t=>Math.floor((t+KO)/86400)*86400-KO;
+const MD=t=>{const p=kp(t);return `${p.m+1}.${p.d}`};
+const HM=t=>{const p=kp(t);return `${p.hh}:${p.mm}`};
+function periods(now){const t=ds(now),p=kp(now);
+  return{day:{f:t-86400,t:t},week:{f:t-((p.dow+6)%7)*86400,t:now+1},month:{f:Date.UTC(p.y,p.m,1)/1000-KO,t:now+1}}}
+
+/* 포맷 */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pct=v=>(v>0?"+":v<0?"−":"")+Math.abs(v).toFixed(2)+"%";
+function won(v,cur){const s=v>0?"+":v<0?"−":"",a=Math.abs(v);
+  return cur==="KRW" ? s+Math.round(a).toLocaleString("ko-KR")+"원"
+                     : s+(a>=100?Math.round(a).toLocaleString("en-US"):a.toFixed(2))+" USD"}
+const cls=v=>v>0?"up":v<0?"down":"";
+
+/* 집계 — 수익률(pts/entry)이 주 지표. 계약승수가 약분돼 시장 간 비교 가능 */
+/* 거래 목록 — 원장(trades.json)이 있으면 그것이 정본이다.
+   없으면 signals.json 의 hist 로 대체하되 첫 구간은 뺀다.
+   (첫 구간은 방향 초기값에서 출발하므로 전환 신호가 아니다) */
+let LEDGER = null;
+function collect(D,f){
+  const o=[];
+  if(LEDGER && LEDGER.trades && LEDGER.trades.length){
+    for(const t of LEDGER.trades){
+      if(f.sym&&t.id!==f.sym)continue;
+      if(f.grp&&t.g!==f.grp)continue;
+      o.push({sid:t.id,name:t.n,cur:t.cur,mult:t.mult,dir:t.dir,t0:t.t0,t1:t.t1,
+              pts:t.pts,ret:t.ret!=null?t.ret:t.pts/t.entry*100,money:t.pts*t.mult});
+    }
+    return o.sort((a,b)=>a.t1-b.t1);
+  }
+  for(const s of D.syms){
+    if(f.sym&&s.id!==f.sym)continue;
+    if(f.grp&&s.g!==f.grp)continue;
+    s.hist.forEach((h,i)=>{ if(i===0||h.open)return;
+      o.push({sid:s.id,name:s.n,cur:s.cur,mult:s.mult,dir:h.dir,t0:h.t0,t1:h.t1,
+              pts:h.pts,ret:h.pts/h.entry*100,money:h.pts*s.mult});});
+  }
+  return o.sort((a,b)=>a.t1-b.t1)}
+function agg(tr){
+  const o={n:tr.length,win:0,ret:0,gw:0,gl:0,byCur:{}};
+  for(const t of tr){
+    o.ret+=t.ret; if(t.ret>0){o.win++;o.gw+=t.ret}else o.gl+=Math.abs(t.ret);
+    (o.byCur[t.cur]=o.byCur[t.cur]||0); o.byCur[t.cur]+=t.money;}
+  o.wr=o.n?o.win/o.n*100:0;
+  const aw=o.win?o.gw/o.win:0, al=(o.n-o.win)?o.gl/(o.n-o.win):0;
+  o.rr=al?aw/al:null;
+  /* 분포 — 종목을 섞었을 때는 합계 대신 이쪽을 쓴다 */
+  const rs=tr.map(t=>t.ret).sort((x,y)=>x-y);
+  o.med   = rs.length ? (rs.length%2 ? rs[(rs.length-1)/2] : (rs[rs.length/2-1]+rs[rs.length/2])/2) : 0;
+  o.worst = rs.length ? rs[0] : 0;
+  let run=0; o.streak=0;
+  for(const t of tr){ if(t.ret<=0){run++; if(run>o.streak)o.streak=run} else run=0 }
+  return o}
+
+/* ★ 종목을 가로지른 합계 수익률은 만들지 않는다.
+   나스닥 1계약 명목가는 약 8억원, 도지 1계약은 약 12만원이다.
+   이 둘의 %를 더하면 산수는 되지만 뜻이 없고,
+   그렇게 표시한 것이 금감원 '25년 점검 적발 유형이다.
+   한 종목만 골랐을 때만 합계를 보여준다. */
+function oneSym(){ return !!F.sym }
+const fx=(v,d)=>Number(v??0).toLocaleString("ko-KR",{minimumFractionDigits:d??2,maximumFractionDigits:d??2});
+function ago(sec){
+  const m=Math.max(0,Math.floor(sec/60));
+  if(m<60) return m+"분";
+  const h=Math.floor(m/60), r=m%60;
+  return r? `${h}시간 ${r}분` : `${h}시간`;
+}
+
+/* 곡선 (무채색) */
+function curve(tr,{h=200,w=1000,pad=4,axis=false,fill=".05"}={}){
+  if(!tr.length)return "";
+  const P=[{v:0}]; let a=0; for(const t of tr){a+=t.ret;P.push({v:a})}
+  const vs=P.map(p=>p.v),lo=Math.min(0,...vs),hi=Math.max(0,...vs),sp=(hi-lo)||1;
+  const X=i=>pad+i*(w-pad*2)/Math.max(P.length-1,1), Y=v=>pad+(hi-v)/sp*(h-pad*2);
+  const ln=P.map((p,i)=>`${i?"L":"M"}${X(i).toFixed(1)},${Y(p.v).toFixed(1)}`).join("");
+  const z=Y(0).toFixed(1), last=P[P.length-1];
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="none" role="img"
+   aria-label="누적 수익률 곡선, 최종 ${pct(last.v)}">
+   <path d="${ln}L${X(P.length-1).toFixed(1)},${z}L${X(0).toFixed(1)},${z}Z" fill="#1D1D1F" fill-opacity="${fill}"/>
+   ${axis?`<line x1="${pad}" y1="${z}" x2="${w-pad}" y2="${z}" stroke="#D2D2D7" stroke-width="1" stroke-dasharray="4 5"/>`:""}
+   <path d="${ln}" fill="none" stroke="#1D1D1F" stroke-opacity=".62" stroke-width="2"
+     stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+   <circle cx="${X(P.length-1).toFixed(1)}" cy="${Y(last.v).toFixed(1)}" r="3" fill="#1D1D1F"/></svg>`}
+
+/* ═════ 렌더 ═════ */
+let D=null, F={}, curG=null;
+const $=id=>document.getElementById(id);
+
+function moneyLine(byCur){
+  return Object.keys(byCur).filter(k=>byCur[k]!==0||Object.keys(byCur).length===1)
+    .map(k=>`<span class="${cls(byCur[k])}">${won(byCur[k],k)}</span>`).join(" · ");
+}
+
+function cards(P,all){
+  const box=$("cards"); box.innerHTML="";
+  const defs=[
+    {k:"어제",  r:`${MD(P.day.f)}`,        f:P.day.f,  t:P.day.t},
+    {k:"이번 주",r:`${MD(P.week.f)}~${MD(D.at)}`, f:P.week.f, t:P.week.t},
+    {k:"이번 달",r:`${MD(P.month.f)}~${MD(D.at)}`,f:P.month.f,t:P.month.t}
+  ];
+  for(const d of defs){
+    const tr=all.filter(x=>x.t1>=d.f&&x.t1<d.t), a=agg(tr);
+    const el=document.createElement("div"); el.className="card";
+    el.innerHTML = a.n ? ( oneSym() ? `
+      <div class="k">${esc(d.k)} · ${esc(d.r)}</div>
+      <div class="v tnum ${cls(a.ret)}">${pct(a.ret)}<span class="u">합계</span></div>
+      <div class="m tnum">${moneyLine(a.byCur)}</div>
+      <div class="spark">${curve(tr,{h:46,w:300,pad:3,fill:".045"})}</div>
+      <div class="f tnum">${a.n}건 · 승 ${a.win}/${a.n} (${a.wr.toFixed(0)}%)${a.rr?` · 손익비 ${a.rr.toFixed(2)}`:""}</div>`
+    : `
+      <div class="k">${esc(d.k)} · ${esc(d.r)}</div>
+      <div class="v tnum">${moneyLine(a.byCur)}<span class="u">1계약 기준</span></div>
+      <div class="m tnum">보통 한 건 <span class="${cls(a.med)}">${pct(a.med)}</span>
+        · 가장 큰 손실 <span class="${cls(a.worst)}">${pct(a.worst)}</span></div>
+      <div class="spark"></div>
+      <div class="f tnum">${a.n}건 · 승 ${a.win}/${a.n} · 연속 손실 최대 ${a.streak}회</div>` )
+    : `<div class="k">${esc(d.k)} · ${esc(d.r)}</div>
+       <div class="v" style="color:var(--ink-3)">기록 없음</div>
+       <div class="m">청산된 신호가 없습니다</div>
+       <div class="spark"></div><div class="f">—</div>`;
+    box.appendChild(el);
+  }
+}
+
+function dayList(tr){
+  if(!tr.length){ $("dayList").innerHTML=`<p class="meta" style="text-align:center">어제는 청산된 신호가 없습니다.</p>`; return; }
+  const cap=6,l=tr.slice().reverse(),more=l.length-cap;
+  $("dayList").innerHTML=`<p class="meta" style="margin-bottom:6px">어제 청산된 신호</p>`+
+    l.slice(0,cap).map(t=>`<div class="row">
+      <span class="d" style="color:${t.dir===1?"var(--buy)":"var(--sell)"}">${t.dir===1?"매수":"매도"}</span>
+      <span class="n">${esc(t.name)}</span>
+      <span class="p tnum ${cls(t.ret)}">${pct(t.ret)}</span>
+    </div>`).join("")+
+    (more>0?`<p class="meta" style="margin-top:14px">외 ${more}건 · 전체 기록은 채널에서 확인하실 수 있습니다.</p>`:"");
+}
+
+function grid9(){
+  $("g9").innerHTML = D.syms.map(s=>{
+    const tr=collect(D,{sym:s.id}), a=agg(tr), buy=s.dir===1;
+    /* 보러 온 것은 신호다. 지금 방향과 전환가가 커야 한다.
+       과거 누적은 아래 작은 줄로 내린다. */
+    const held = s.t0 ? ago(D.at - s.t0) : "";
+    return `<div class="mk">
+      <div class="top">
+        <span class="nm">${esc(s.n)}</span>
+        <span class="dir big ${buy?"buy":"sell"}">${buy?"매수":"매도"}</span>
+      </div>
+      <div class="pc tnum ${cls(s.pct)}">${(s.pct>0?"+":"")}${(s.pct??0).toFixed(2)}%
+        <span class="mn tnum">${won(s.money??0, s.cur)}</span></div>
+      <div class="sm tnum">${buy?"매도":"매수"} 전환 <b>${fx(s.line,s.d)}</b>${held?` · ${held}째`:""}</div>
+      <div class="sp">${curve(tr,{h:40,w:300,pad:3,fill:".045"})}</div>
+      <div class="sm tnum" style="margin-top:8px;opacity:.72">${a.n
+        ? `기록 ${a.n}건 · 승률 ${a.wr.toFixed(0)}% · 합계 <span class="${cls(a.ret)}">${pct(a.ret)}</span>`
+        : "기록 준비 중"}</div>
+    </div>`;
+  }).join("");
+}
+
+function equity(all){
+  const a=agg(all);
+  if(!a.n){ $("eq").innerHTML=`<p class="meta" style="text-align:center">기록이 없습니다.</p>`; return }
+
+  /* 한 종목만 골랐을 때 — 곡선을 그려도 뜻이 있다 */
+  if(oneSym()){
+    $("eq").innerHTML = `
+      <div class="hd">
+        <span class="n tnum ${cls(a.ret)}">${pct(a.ret)}</span>
+        <span class="s tnum">${MD(all[0].t1)} ~ ${MD(D.at)} · ${a.n}건 · 승률 ${a.wr.toFixed(0)}%${a.rr?` · 손익비 ${a.rr.toFixed(2)}`:""}</span>
+      </div>
+      ${curve(all,{h:260,w:1000,pad:10,axis:true})}`;
+    return;
+  }
+
+  /* 여러 종목 — 합치지 않고 종목별로 나눠 보여준다 */
+  const ids=[...new Set(all.map(t=>t.sid))];
+  const rows=ids.map(id=>{
+    const tr=all.filter(t=>t.sid===id), b=agg(tr);
+    return `<tr>
+      <td>${esc(tr[0].name)}</td>
+      <td class="tnum">${b.n}</td>
+      <td class="tnum">${b.win}/${b.n} · ${b.wr.toFixed(0)}%</td>
+      <td class="tnum ${cls(b.med)}">${pct(b.med)}</td>
+      <td class="tnum ${cls(b.ret)}">${pct(b.ret)}</td>
+      <td class="tnum ${cls(b.worst)}">${pct(b.worst)}</td></tr>`;
+  }).join("");
+  $("eq").innerHTML = `
+    <div class="hd">
+      <span class="s tnum">${MD(all[0].t1)} ~ ${MD(D.at)} · 전체 ${a.n}건 · 승률 ${a.wr.toFixed(0)}% · 연속 손실 최대 ${a.streak}회</span>
+    </div>
+    <div class="eqtbl"><table>
+      <thead><tr><th>종목</th><th>거래</th><th>이긴 횟수</th><th>보통 한 건</th><th>합계</th><th>최악 1건</th></tr></thead>
+      <tbody>${rows}</tbody></table></div>
+    <p class="meta" style="margin-top:14px">계약 크기가 시장마다 달라 종목끼리 더하지 않습니다.
+      나스닥100 1계약은 약 8억원, 도지코인 1계약은 약 12만원입니다.</p>`;
+}
+
+function render(){
+  const P=periods(D.at), all=collect(D,F);
+  cards(P,all);
+  dayList(all.filter(t=>t.t1>=P.day.f&&t.t1<P.day.t));
+  equity(all);
+  // 히어로 — 수익률 대신 검증 가능한 규모 지표
+  if(!F.sym&&!F.grp){
+    const days = all.length ? Math.max(1, Math.round((D.at-all[0].t1)/86400)) : 0;
+    const items = [
+      ["9", "개 시장을 동시에"],
+      ["5분", "마다 다시 계산"],
+      [all.length.toLocaleString() + "건", "누적 신호 기록"],
+      [days ? days + "일" : "—", "기록을 쌓은 기간"]
+    ];
+    $("hScale").innerHTML = items.map(([v,k])=>
+      `<div><div class="v tnum">${v}</div><div class="k">${k}</div></div>`).join("");
+    /* 히어로에는 곡선을 걸지 않는다 — 종목을 가로지른 누적이라 뜻이 없다 */
+    $("hArt").innerHTML = "";
+  }
+}
+
+/* 2단 시장 선택 */
+function picker(){
+  const g=$("segG"); g.innerHTML="";
+  const items=[{l:"전체",k:null},...GROUPS.filter(x=>D.syms.some(s=>s.g===x.k)).map(x=>({l:x.l,k:x.k}))];
+  items.forEach(it=>{
+    const b=document.createElement("button"); b.type="button"; b.role="tab"; b.textContent=it.l;
+    b.setAttribute("aria-selected", it.k===curG?"true":"false");
+    b.onclick=()=>{ g.querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected","false"));
+      b.setAttribute("aria-selected","true"); curG=it.k; F=it.k?{grp:it.k}:{}; sub(); render(); };
+    g.appendChild(b);
+  });
+  sub();
+}
+function sub(){
+  const s=$("segS"); s.innerHTML="";
+  if(!curG){ s.style.display="none"; return; }
+  s.style.display="flex";
+  const mk=(l,fn,sel)=>{const b=document.createElement("button");b.type="button";b.role="tab";b.textContent=l;
+    b.setAttribute("aria-selected",sel?"true":"false");b.onclick=()=>{fn();
+      s.querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected","false"));
+      b.setAttribute("aria-selected","true");};return b};
+  s.appendChild(mk("전체",()=>{F={grp:curG};render()},!F.sym));
+  for(const sy of D.syms.filter(x=>x.g===curG))
+    s.appendChild(mk(sy.n.replace(" 선물","").replace(" 무기한",""),()=>{F={sym:sy.id};render()},F.sym===sy.id));
+}
+
+/* 부팅 */
+(async function(){
+  const h=(id,u)=>{const e=$(id);if(e)e.href=u};
+  h("joinB",CONFIG.telegramJoin);h("askB",CONFIG.telegramAsk);h("ytB",CONFIG.youtube);h("chartA",CONFIG.chartUrl);
+  let live=false;
+  if(CONFIG.feed){
+    const base=CONFIG.feed.replace(/\/?$/,"/");
+    try{const r=await fetch(base+"signals.json",{cache:"no-store"});
+      if(r.ok){D=await r.json();live=true}}catch(e){console.warn("signals 실패 → 스냅샷",e)}
+    try{const r2=await fetch(base+"trades.json",{cache:"no-store"});
+      if(r2.ok){const j=await r2.json(); if(j&&Array.isArray(j.trades)) LEDGER=j;}}
+    catch(e){console.warn("trades.json 없음 — hist 로 대체",e)}
+  }
+  if(!LEDGER && window.TUJAKOK_LEDGER) LEDGER = window.TUJAKOK_LEDGER;
+  if(!D) D=SNAPSHOT;
+  const bn=$("banner");
+  if(!live){ bn.innerHTML=`<b>${MD(D.at)} ${HM(D.at)} 저장된 기록입니다.</b> 설정의 feed에 시세 저장소 주소를 넣으면 5분마다 자동 갱신됩니다.`; bn.hidden=false; }
+  else if(!LEDGER){ bn.innerHTML=`<b>거래 원장(trades.json)이 아직 없습니다.</b> 지금 표시되는 기록은 최근 300봉 안의 것뿐이며, 그 이전은 남아 있지 않습니다.`; bn.hidden=false; }
+  else { const m=Math.max(0,Math.round((Date.now()/1000-D.at)/60));
+    bn.innerHTML = m>15?`<b>${m}분째 갱신되지 않았습니다.</b> 저장소 자동 실행을 확인하세요.`:`마지막 갱신 ${m}분 전`; bn.hidden=false; }
+  picker(); render(); grid9();
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in-v");io.unobserve(e.target)}}),
+    {rootMargin:"0px 0px -6% 0px",threshold:.05});
+  document.querySelectorAll(".rv").forEach((el,i)=>{el.style.transitionDelay=Math.min(i%3,2)*60+"ms";io.observe(el)});
+})();
+</script>
+</body>
+</html>
